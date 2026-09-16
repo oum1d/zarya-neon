@@ -386,6 +386,10 @@
 }
 
 .legal { padding-block: var(--s-8) var(--s-9); }
+/* Заголовок документа — не витрина: в размере главной слово
+   «конфиденциальности» шире телефона и растягивает страницу вбок */
+.legal .section__head { max-width: none; }
+.legal h1 { font-size: clamp(1.5rem, 7vw, 3.4rem); overflow-wrap: break-word; hyphens: auto; }
 .legal__body { max-width: var(--measure); }
 .legal__block + .legal__block { margin-top: var(--s-6); }
 .legal__h { font-size: var(--t-h3); margin-bottom: var(--s-3); }
