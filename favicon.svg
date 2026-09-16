@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>ZARYA</title>
+  <defs>
+    <filter id="g" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#0A0A0E"/>
+  <g filter="url(#g)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 25 L16 7 L25 25 M11 18.5 L21 18.5" stroke="#FF4D1C" stroke-width="3.4" opacity="0.95"/>
+    <path d="M7 25 L16 7 L25 25 M11 18.5 L21 18.5" stroke="#FFF3EC" stroke-width="1.1"/>
+  </g>
+</svg>

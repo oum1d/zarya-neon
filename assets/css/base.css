@@ -1,0 +1,164 @@
+/* ============================================================================
+   ЗАРЯ — база
+   ----------------------------------------------------------------------------
+   Сброс, типографика, фокус, утилиты. Ничего декоративного: декор живёт
+   в components.css, свечение — в neon.css.
+   ============================================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Якорь не должен уезжать под липкую шапку */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--f-text);
+  font-size: var(--t-body);
+  line-height: var(--lh-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color var(--d-switch) var(--e-switch),
+              color var(--d-switch) var(--e-switch);
+}
+
+body.has-nav-open { overflow: hidden; }
+
+h1, h2, h3, h4 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  line-height: var(--lh-head);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+h1 { font-size: var(--t-hero); line-height: var(--lh-tight); }
+h2 { font-size: var(--t-h2); }
+h3 { font-size: var(--t-h3); }
+
+p { margin: 0; }
+p + p { margin-top: var(--s-4); }
+
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+img, svg { display: block; max-width: 100%; }
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+  text-underline-offset: 0.22em;
+  transition: color var(--d-fast) var(--e-out),
+              text-decoration-color var(--d-fast) var(--e-out);
+}
+
+a:hover { color: var(--c-accent); text-decoration-color: currentColor; }
+
+.link {
+  color: var(--c-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+/* --- Фокус ---------------------------------------------------------------
+   Одна заметная рамка на весь сайт. Никогда не убираем её у клавиатуры:
+   без неё сайтом нельзя пользоваться без мыши. */
+:focus-visible {
+  outline: var(--focus-w) solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-s);
+}
+
+:focus:not(:focus-visible) { outline: none; }
+
+/* --- Служебное ------------------------------------------------------------ */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: absolute;
+  left: var(--s-4);
+  top: -100%;
+  z-index: var(--z-modal);
+  padding: var(--s-3) var(--s-5);
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+  font-family: var(--f-display);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.skip:focus { top: var(--s-4); }
+
+[hidden] { display: none !important; }
+
+/* Утилиты вместо инлайн-стилей: с ними CSP обходится без unsafe-inline */
+.u-mt-4 { margin-top: var(--s-4); }
+.u-mt-6 { margin-top: var(--s-6); }
+.u-mt-7 { margin-top: var(--s-7); }
+.u-measure { max-width: var(--measure); }
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+}
+
+/* --- Полоса прокрутки ----------------------------------------------------- */
+* { scrollbar-color: var(--c-line-2) transparent; scrollbar-width: thin; }
+
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: var(--c-line-2);
+  border-radius: var(--radius-pill);
+  border: 3px solid var(--c-bg);
+}
+
+/* --- Появление секций ----------------------------------------------------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity var(--d-slow) var(--e-out),
+              transform var(--d-slow) var(--e-out);
+}
+
+[data-reveal].is-in { opacity: 1; transform: none; }
+
+/* --- Полное выключение движения -------------------------------------------
+   Не «поменьше анимации», а действительно ни одной: людям с вестибулярными
+   нарушениями от «мягкого» параллакса плохо ровно так же. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* --- Печать ---------------------------------------------------------------
+   Смету распечатывают и несут бухгалтеру — пусть выглядит как документ. */
+@media print {
+  body { background: #fff; color: #000; }
+  .site-header, .site-footer, .builder__form, .sample__go { display: none !important; }
+  .estimate { break-inside: avoid; }
+}

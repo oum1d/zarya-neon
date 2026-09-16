@@ -1,0 +1,714 @@
+/* ============================================================================
+   ЗАРЯ — компоненты
+   ----------------------------------------------------------------------------
+   Кнопки, рубильник, поля конструктора, карточки, прайс, FAQ, смета, форма.
+   Каждая интерактивная цель — не меньше 44×44 px: это не про эстетику,
+   а про палец на телефоне и про WCAG.
+   ============================================================================ */
+
+/* ============================== КНОПКИ ==================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 3rem;
+  padding: 0.75rem 1.6rem;
+  font-family: var(--f-display);
+  font-size: 1rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background-color var(--d-fast) var(--e-out),
+              color var(--d-fast) var(--e-out),
+              border-color var(--d-fast) var(--e-out),
+              box-shadow var(--d-base) var(--e-out),
+              transform var(--d-fast) var(--e-out);
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn--primary {
+  background: var(--c-accent);
+  color: var(--c-accent-ink);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.btn--primary:hover {
+  color: var(--c-accent-ink);
+  box-shadow:
+    0 0 calc(18px * (1 - var(--room-light))) color-mix(in srgb, var(--c-accent) 55%, transparent),
+    0 0 calc(46px * (1 - var(--room-light))) color-mix(in srgb, var(--c-accent) 30%, transparent);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--c-ink);
+  border-color: var(--c-line-2);
+}
+
+.btn--ghost:hover { border-color: var(--c-ink); color: var(--c-ink); }
+
+.btn--small { min-height: 2.75rem; padding: 0.5rem 1.1rem; font-size: var(--t-small); }
+
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+/* --- Языки ---------------------------------------------------------------
+   Три языка видны сразу, активный подсвечен. Кнопка-переключатель «на
+   следующий язык» заставляла бы гадать, что откроется после щелчка.
+   На кнопке — код, полное название языка уходит в aria-label. */
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-pill);
+}
+
+.lang__btn {
+  min-height: 2.15rem;
+  min-width: 2.35rem;
+  padding: 0 0.5rem;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--c-ink-mute);
+  font-family: var(--f-display);
+  font-size: var(--t-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--d-fast) var(--e-out),
+              background-color var(--d-fast) var(--e-out);
+}
+
+.lang__btn:hover { color: var(--c-ink); }
+
+.lang__btn[aria-pressed="true"] {
+  background: var(--c-panel-2);
+  color: var(--c-accent);
+}
+
+@media (min-width: 60rem) {
+  .lang__btn { min-height: 2.35rem; min-width: 2.6rem; }
+}
+
+/* Копия переключателя внутри мобильного меню. Обычно скрыта — она нужна
+   только на очень узких экранах, где в шапке уже нет места и языки
+   переезжают в меню целиком. */
+.nav .lang { display: none; }
+
+@media (max-width: 23.5rem) {
+  .site-header__inner > .lang { display: none; }
+  .nav .lang { display: inline-flex; margin-top: var(--s-4); }
+}
+
+/* ============================== КАРТОЧКИ ================================== */
+.why-card {
+  padding: var(--s-5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-l);
+  background: var(--c-panel);
+  transition: border-color var(--d-base) var(--e-out),
+              background-color var(--d-base) var(--e-out);
+}
+
+.why-card:hover { border-color: var(--c-line-2); }
+
+.why-card__num {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--c-ink-mute);
+  margin-bottom: var(--s-4);
+}
+
+.why-card__t { font-size: var(--t-h3); margin-bottom: var(--s-3); }
+
+.why-card__d { color: var(--c-ink-dim); font-size: var(--t-small); line-height: 1.7; }
+
+/* Карточка «когда лента лучше» — самая честная, поэтому и выделена */
+.why-card--honest {
+  border-color: color-mix(in srgb, var(--c-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--c-accent) 7%, transparent);
+}
+
+.why-card--honest .why-card__num { color: var(--c-accent); }
+
+/* ================================ ШАГИ ==================================== */
+.step {
+  display: flex;
+  gap: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-line);
+}
+
+.step__n {
+  font-family: var(--f-mono);
+  font-size: var(--t-small);
+  color: var(--c-accent);
+  flex: none;
+  padding-top: 0.2rem;
+}
+
+.step__t { font-size: var(--t-h3); margin-bottom: var(--s-2); }
+
+.step__d { color: var(--c-ink-dim); font-size: var(--t-small); line-height: 1.7; }
+
+/* =============================== ОБРАЗЦЫ ================================== */
+.sample {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  text-align: left;
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-l);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color var(--d-base) var(--e-out),
+              transform var(--d-base) var(--e-out);
+}
+
+.sample:hover { border-color: var(--c-line-2); transform: translateY(-3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sample:hover { transform: none; }
+}
+
+.sample__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  background: var(--c-bg);
+  overflow: hidden;
+  padding: var(--s-4);
+}
+
+/* Фон карточки одинаковый у всех образцов. Подложку рисует сам SVG — и
+   раньше карточка с прозрачным акрилом красилась ещё и снаружи, из-за чего
+   выбивалась из ряда: у неё был светлый фон, а у остальных тёмный. */
+.sample__stage { background: #0B0B0E; }
+
+.sample__stage .neon-svg { max-height: 100%; }
+
+.sample__cap { display: grid; gap: 0.15rem; }
+
+.sample__text {
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  letter-spacing: var(--tracking-wide);
+}
+
+.sample__sub { font-size: var(--t-small); color: var(--c-ink-dim); }
+
+.sample__go {
+  margin-top: var(--s-2);
+  font-size: var(--t-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+/* ============================= КОНСТРУКТОР ================================ */
+.builder__stage { min-height: clamp(16rem, 42vh, 26rem); }
+
+.field { display: grid; gap: var(--s-2); margin-bottom: var(--s-5); }
+
+.field__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  font-family: var(--f-display);
+  font-size: var(--t-small);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.field__hint { font-size: var(--t-micro); color: var(--c-ink-mute); text-transform: none; letter-spacing: 0; }
+
+.field__count { font-family: var(--f-mono); font-size: var(--t-micro); color: var(--c-ink-mute); }
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--c-panel);
+  color: var(--c-ink);
+  border: 1px solid var(--c-line-2);
+  border-radius: var(--radius);
+  font-family: var(--f-text);
+  font-size: 1rem;
+  transition: border-color var(--d-fast) var(--e-out),
+              background-color var(--d-fast) var(--e-out);
+}
+
+.input:hover, .select:hover, .textarea:hover { border-color: var(--c-ink-mute); }
+
+.input:focus, .select:focus, .textarea:focus { border-color: var(--c-accent); }
+
+.input--sign {
+  font-family: var(--f-display);
+  font-size: 1.3rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.textarea { min-height: 7rem; resize: vertical; }
+
+/* Пункты списка. Схему рисования задаёт color-scheme в tokens.css, а эти
+   правила подтягивают цвета под сайт там, где браузер их слушает. */
+.select option,
+.select optgroup {
+  background: var(--c-bg-2);
+  color: var(--c-ink);
+}
+
+.select {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) 1.35rem, calc(100% - 0.85rem) 1.35rem;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* Ползунок высоты букв */
+.range { display: flex; align-items: center; gap: var(--s-4); }
+
+.range input[type="range"] {
+  flex: 1;
+  appearance: none;
+  height: 3rem;
+  background: none;
+  cursor: pointer;
+}
+
+.range input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--c-line-2);
+  border-radius: 2px;
+}
+
+.range input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: -0.62rem;
+  border-radius: 50%;
+  background: var(--c-accent);
+  border: 0;
+  box-shadow: 0 0 calc(14px * (1 - var(--room-light))) color-mix(in srgb, var(--c-accent) 60%, transparent);
+}
+
+.range input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: var(--c-line-2);
+  border-radius: 2px;
+}
+
+.range input[type="range"]::-moz-range-thumb {
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c-accent);
+}
+
+.range__out {
+  min-width: 4.5rem;
+  text-align: right;
+  font-family: var(--f-mono);
+  font-size: 1.1rem;
+}
+
+/* Переключатели-«чипы»: диаметр трубки, рамка */
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+.chip { position: relative; }
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.chip span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--c-line-2);
+  border-radius: var(--radius-pill);
+  font-family: var(--f-display);
+  font-size: var(--t-small);
+  letter-spacing: 0.04em;
+  color: var(--c-ink-dim);
+  transition: all var(--d-fast) var(--e-out);
+}
+
+.chip input:checked + span {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+  background: color-mix(in srgb, var(--c-accent) 12%, transparent);
+}
+
+.chip input:focus-visible + span {
+  outline: var(--focus-w) solid var(--c-accent);
+  outline-offset: 3px;
+}
+
+/* --- Флажки --------------------------------------------------------------
+   Системный чекбокс на тёмном фоне рисуется белым квадратом и выбивается
+   из интерфейса — на фоне тонких линий он выглядит как заплатка. Поэтому
+   квадрат свой: рамка цветом обычных линий, при отметке заливается акцентом
+   и получает галочку. Размер и поведение — как у настоящего input, потому
+   что это и есть input, у него просто снята стандартная отрисовка. */
+.check {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-3);
+  align-items: start;
+  padding: var(--s-2) 0;
+  min-height: 2.75rem;
+  cursor: pointer;
+  font-size: var(--t-small);
+}
+
+.check input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0.1rem 0 0;
+  display: grid;
+  place-content: center;
+  background: var(--c-panel);
+  border: 1.5px solid var(--c-line-2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color var(--d-fast) var(--e-out),
+              border-color var(--d-fast) var(--e-out);
+}
+
+.check input[type="checkbox"]:hover { border-color: var(--c-ink-mute); }
+
+/* Галочка — две стороны рамки, повёрнутые на 45°: рисуется без картинок
+   и остаётся чёткой на любом экране. */
+.check input[type="checkbox"]::before {
+  content: "";
+  width: 0.34rem;
+  height: 0.66rem;
+  margin-top: -0.12rem;
+  border: solid var(--c-accent-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transform-origin: center;
+  transition: transform var(--d-fast) var(--e-out);
+}
+
+.check input[type="checkbox"]:checked {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+}
+
+.check input[type="checkbox"]:checked::before { transform: rotate(45deg) scale(1); }
+
+.warn {
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--gas-warm) 45%, transparent);
+  background: color-mix(in srgb, var(--gas-warm) 10%, transparent);
+  font-size: var(--t-small);
+}
+
+/* --- Смета ---------------------------------------------------------------- */
+.estimate {
+  margin-top: var(--s-6);
+  padding: var(--s-5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-l);
+  background: var(--c-panel);
+}
+
+.estimate__title {
+  font-family: var(--f-display);
+  font-size: var(--t-small);
+  letter-spacing: var(--tracking-micro);
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+  margin-bottom: var(--s-4);
+}
+
+.estimate__row {
+  display: flex;
+  gap: var(--s-4);
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--s-3) 0;
+  border-bottom: 1px dashed var(--c-line);
+}
+
+.estimate__main { display: grid; gap: 0.15rem; }
+
+.estimate__label { font-size: var(--t-small); }
+
+.estimate__note {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--c-ink-mute);
+}
+
+.estimate__sum {
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.estimate__empty { color: var(--c-ink-mute); font-size: var(--t-small); }
+
+.estimate__totals { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+
+.estimate__total {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font-size: var(--t-small);
+  color: var(--c-ink-dim);
+}
+
+.estimate__total--main {
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--c-line-2);
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  color: var(--c-ink);
+  align-items: baseline;
+}
+
+.estimate__total--main b { font-weight: 600; color: var(--c-accent); }
+
+.estimate__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+}
+
+.estimate__disclaimer {
+  margin-top: var(--s-4);
+  font-size: var(--t-micro);
+  color: var(--c-ink-mute);
+  line-height: 1.6;
+}
+
+/* --- Факты о вывеске ------------------------------------------------------ */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s-3);
+  margin-top: var(--s-4);
+}
+
+.fact {
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-panel);
+}
+
+.fact__k {
+  display: block;
+  font-size: var(--t-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+  margin-bottom: 0.2rem;
+}
+
+.fact__v { font-family: var(--f-mono); font-size: 1.05rem; }
+
+@media (min-width: 30rem) {
+  .facts { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ================================ ПРАЙС =================================== */
+.price-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.price {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+}
+
+.price th, .price td {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  border-bottom: 1px solid var(--c-line);
+  vertical-align: top;
+}
+
+.price thead th {
+  font-family: var(--f-display);
+  font-size: var(--t-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+  border-bottom-color: var(--c-line-2);
+}
+
+.price__item { font-weight: 500; }
+
+.price__value { font-family: var(--f-mono); white-space: nowrap; color: var(--c-accent); }
+
+.price__note { color: var(--c-ink-dim); }
+
+.price-note { margin-top: var(--s-4); font-size: var(--t-micro); color: var(--c-ink-mute); }
+
+/* ================================= FAQ ==================================== */
+.faq { max-width: var(--measure); }
+
+.faq__item { border-bottom: 1px solid var(--c-line); }
+
+.faq__q {
+  display: flex;
+  gap: var(--s-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-4) 0;
+  min-height: 3.25rem;
+  cursor: pointer;
+  font-family: var(--f-display);
+  font-size: 1.1rem;
+  list-style: none;
+}
+
+.faq__q::-webkit-details-marker { display: none; }
+
+.faq__q:hover { color: var(--c-accent); }
+
+.faq__q-mark {
+  position: relative;
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.faq__q-mark::before,
+.faq__q-mark::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform var(--d-base) var(--e-out);
+}
+
+.faq__q-mark::after { transform: rotate(90deg); }
+
+.faq__item[open] .faq__q-mark::after { transform: rotate(0deg); }
+
+.faq__a {
+  padding-bottom: var(--s-5);
+  color: var(--c-ink-dim);
+  font-size: var(--t-small);
+  line-height: 1.75;
+  max-width: 62ch;
+}
+
+/* ================================ ФОРМА =================================== */
+.form { display: grid; gap: var(--s-4); }
+
+.form__row { display: grid; gap: var(--s-4); }
+
+@media (min-width: 40rem) {
+  .form__row--two { grid-template-columns: 1fr 1fr; }
+}
+
+.error {
+  font-size: var(--t-small);
+  color: var(--gas-ruby);
+  display: flex;
+  gap: var(--s-2);
+}
+
+@media (prefers-color-scheme: light) {
+  .error { color: #B0173F; }
+}
+
+.input[aria-invalid="true"],
+.textarea[aria-invalid="true"] { border-color: var(--gas-ruby); }
+
+.spec-badge {
+  font-size: var(--t-micro);
+  color: var(--c-ink-mute);
+  padding: var(--s-2) 0;
+}
+
+.spec-badge.is-on { color: var(--gas-mint); }
+
+@media (prefers-color-scheme: light) {
+  .spec-badge.is-on { color: #0C6B41; }
+}
+
+.form-status {
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--c-line-2);
+  background: var(--c-panel);
+}
+
+.form-status--warn { border-color: color-mix(in srgb, var(--gas-warm) 55%, transparent); }
+.form-status--error { border-color: color-mix(in srgb, var(--gas-ruby) 55%, transparent); }
+
+.form-status__t { display: block; font-family: var(--f-display); font-size: 1.05rem; }
+
+.form-status__d { margin-top: var(--s-2); font-size: var(--t-small); color: var(--c-ink-dim); }
+
+/* Ловушка для ботов: не видна человеку, но и не display:none —
+   часть скриптов игнорирует скрытые поля. */
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ============================== КОНТАКТЫ ================================== */
+.contact-card {
+  padding: var(--s-5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius-l);
+  background: var(--c-panel);
+  display: grid;
+  gap: var(--s-3);
+}
+
+.contact-card dt {
+  font-size: var(--t-micro);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+}
+
+.contact-card dd { margin: 0; font-size: 1.05rem; }
+
+.note-inline { font-size: var(--t-micro); color: var(--c-ink-mute); }

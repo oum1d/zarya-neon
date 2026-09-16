@@ -1,0 +1,391 @@
+/* ============================================================================
+   ЗАРЯ — каркас страницы
+   ----------------------------------------------------------------------------
+   Шапка, первый экран, ритм секций, подвал. Сначала мобильная раскладка,
+   потом расширения — иначе на телефоне всегда остаются хвосты от десктопа.
+   ============================================================================ */
+
+.wrap {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.section--tint { background: var(--c-bg-2); transition: background-color var(--d-switch) var(--e-switch); }
+
+.section__head { max-width: var(--measure); margin-bottom: var(--s-7); }
+
+.kicker {
+  display: inline-block;
+  margin-bottom: var(--s-3);
+  font-family: var(--f-display);
+  font-size: var(--t-small);
+  letter-spacing: var(--tracking-micro);
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+.section__lead {
+  margin-top: var(--s-4);
+  max-width: var(--measure);
+  font-size: var(--t-lead);
+  color: var(--c-ink-dim);
+}
+
+/* ============================== ШАПКА ===================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--d-base) var(--e-out),
+              background-color var(--d-switch) var(--e-switch);
+}
+
+.site-header.is-stuck { border-bottom-color: var(--c-line); }
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-height: 4.5rem;
+}
+
+/* --- Логотип -------------------------------------------------------------
+   Не иконка и не шрифтовой набор, а та же гнутая трубка, что и товар:
+   слово рисуется алфавитом сайта. Ширина берётся из пропорций viewBox,
+   поэтому логотип остаётся одинаковой высоты на всех языках. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: auto;
+  min-height: 2.75rem;
+  flex: none;          /* логотип не сжимается: гнутое стекло не тянется */
+}
+
+.brand__sign {
+  height: 1.75rem;
+  width: auto;
+  overflow: visible;   /* свечению нужно место за границами холста */
+}
+
+/* Пока скрипты не отработали, имя показывается обычным текстом:
+   шапка без логотипа выглядела бы сломанной. */
+.brand__name {
+  font-family: var(--f-display);
+  font-size: 1.35rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.is-ready .brand__name {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Навигация ------------------------------------------------------------ */
+.nav {
+  position: fixed;
+  inset: 4.5rem 0 auto 0;
+  padding: var(--s-5) var(--gutter) var(--s-7);
+  background: var(--c-bg);
+  border-bottom: 1px solid var(--c-line);
+  transform: translateY(-120%);
+  visibility: hidden;
+  /* visibility переключается мгновенно, без перехода: иначе меню на долю
+     секунды остаётся невидимым, и фокус в него не переносится. */
+  transition: transform var(--d-base) var(--e-out);
+}
+
+.nav.is-open { transform: none; visibility: visible; }
+
+.nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.nav__link {
+  display: block;
+  padding: var(--s-3) 0;
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--c-ink-dim);
+  border-bottom: 1px solid var(--c-line);
+}
+
+.nav__link:hover,
+.nav__link[aria-current="true"] { color: var(--c-ink); }
+
+.nav__link[aria-current="true"] { color: var(--c-accent); }
+
+.nav-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0 0.6rem;
+  background: none;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  height: 1.5px;
+  background: var(--c-ink);
+  transition: transform var(--d-fast) var(--e-out), opacity var(--d-fast);
+}
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+@media (min-width: 60rem) {
+  .nav {
+    position: static;
+    padding: 0;
+    background: none;
+    border: 0;
+    transform: none;
+    visibility: visible;
+    margin-right: var(--s-4);
+  }
+  .nav__list { flex-direction: row; gap: var(--s-4); }
+  .nav__link {
+    padding: 0;
+    font-size: var(--t-micro);
+    border: 0;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+  .nav-toggle { display: none; }
+}
+
+/* На просторных экранах меню дышит свободнее */
+@media (min-width: 78rem) {
+  .nav__list { gap: var(--s-5); }
+  .nav__link { font-size: var(--t-small); }
+  .brand__sign { height: 1.95rem; }
+}
+
+/* ============================ ПЕРВЫЙ ЭКРАН ================================ */
+.hero {
+  position: relative;
+  min-height: min(92svh, 60rem);
+  display: grid;
+  align-content: center;
+  padding-block: var(--s-9) var(--s-8);
+  overflow: hidden;
+}
+
+/* Отсвет вывески на стене мастерской. Днём его нет — стена просто стена. */
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: min(120vw, 70rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--gas-neon) 22%, transparent) 0%,
+    transparent 62%);
+  opacity: calc(1 - var(--room-light));
+  transition: opacity var(--d-switch) var(--e-switch);
+  pointer-events: none;
+}
+
+.hero__inner {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--s-5);
+  position: relative;
+}
+
+.hero__kicker {
+  font-family: var(--f-display);
+  font-size: var(--t-small);
+  letter-spacing: var(--tracking-micro);
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+}
+
+/* Сама вывеска. Высота задана в vw, чтобы буквы не мельчали на телефоне. */
+.hero__sign {
+  width: min(100%, 46rem);
+  height: clamp(9rem, 26vw, 17rem);
+}
+
+.hero__h1 {
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  max-width: 22ch;
+}
+
+.hero__lead {
+  max-width: 54ch;
+  font-size: var(--t-lead);
+  color: var(--c-ink-dim);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  justify-content: center;
+  margin-top: var(--s-2);
+}
+
+.hero__actions--left { justify-content: flex-start; margin-top: var(--s-6); }
+
+/* ============================== СЕТКИ ===================================== */
+.grid-why {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: 1fr;
+}
+
+.grid-samples {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: 1fr;
+}
+
+.process { display: grid; gap: var(--s-5); }
+
+.builder__grid {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+/* Телефон: превью прилипает к шапке и остаётся на виду, пока человек
+   крутит настройки внизу. Ради этого колонка «растворяется» (display:
+   contents), и липким становится сам холст — иначе ему негде липнуть:
+   sticky живёт только в границах своего родителя. */
+@media (max-width: 63.99rem) {
+  .builder__grid { display: block; }
+
+  .builder__preview { display: contents; }
+
+  .builder__stage {
+    position: sticky;
+    top: 4.6rem;
+    z-index: 3;
+    min-height: 9rem;
+    max-height: 34vh;
+    margin-bottom: var(--s-4);
+  }
+
+  .builder__panel { margin-top: var(--s-6); }
+}
+
+@media (min-width: 64rem) {
+  .builder__preview { position: sticky; top: 5rem; z-index: 2; }
+}
+
+.contact__grid {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 44rem) {
+  .grid-why { grid-template-columns: repeat(2, 1fr); }
+  .grid-samples { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 64rem) {
+  .grid-why { grid-template-columns: repeat(4, 1fr); }
+  .grid-samples { grid-template-columns: repeat(3, 1fr); }
+  .builder__grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  .contact__grid { grid-template-columns: 1.2fr 1fr; gap: var(--s-8); }
+  .process { grid-template-columns: repeat(2, 1fr); gap: var(--s-6) var(--s-7); }
+}
+
+/* ============================== ПОДВАЛ ==================================== */
+.site-footer {
+  padding-block: var(--s-8) var(--s-6);
+  border-top: 1px solid var(--c-line);
+  background: var(--c-bg-2);
+  transition: background-color var(--d-switch) var(--e-switch);
+}
+
+.site-footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer-brand {
+  font-family: var(--f-display);
+  font-size: 1.35rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--s-1);
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  font-size: var(--t-small);
+}
+
+.site-footer__bottom {
+  margin-top: var(--s-6);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--c-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  justify-content: space-between;
+  font-size: var(--t-micro);
+  color: var(--c-ink-mute);
+}
+
+/* ====================== СЛУЖЕБНЫЕ СТРАНИЦЫ ================================ */
+.page-narrow {
+  min-height: 70svh;
+  display: grid;
+  align-content: center;
+  padding-block: var(--s-9);
+}
+
+.page-narrow__inner { max-width: 46rem; }
+
+.page-sign {
+  width: min(100%, 26rem);
+  height: clamp(7rem, 22vw, 12rem);
+  margin-bottom: var(--s-5);
+}
+
+.legal { padding-block: var(--s-8) var(--s-9); }
+.legal__body { max-width: var(--measure); }
+.legal__block + .legal__block { margin-top: var(--s-6); }
+.legal__h { font-size: var(--t-h3); margin-bottom: var(--s-3); }

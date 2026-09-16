@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Nie znaleziono strony — ZARYA</title>
+<meta name="description" content="Pod tym adresem nic nie ma.">
+<meta name="robots" content="noindex, follow">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/neon.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+
+<body data-page="404" data-page-title-key="notFound.title">
+
+<a class="skip" href="#main" data-i18n="nav.skip">Przejdź do treści</a>
+
+<header class="site-header" data-header>
+  <div class="wrap site-header__inner">
+    <a class="brand" href="index.html">
+      <svg class="brand__sign" data-sign="hero.sign" data-gas="neon"
+           aria-hidden="true" focusable="false"></svg>
+      <span class="brand__name">ZARYA</span>
+    </a>
+
+    <div class="lang" role="group" data-lang-group aria-label="Język">
+      <button class="lang__btn" type="button" data-lang="pl">PL</button>
+      <button class="lang__btn" type="button" data-lang="ru">RU</button>
+      <button class="lang__btn" type="button" data-lang="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="page-narrow">
+  <div class="wrap page-narrow__inner">
+
+    <!-- Трубка с обрывом: горит через раз, как настоящая неисправная -->
+    <svg class="page-sign neon-svg is-broken" data-sign="notFound.sign" data-gas="ruby"
+         role="img" aria-label="404"></svg>
+
+    <h1 data-i18n="notFound.h1">Ta rurka nie świeci</h1>
+    <p class="section__lead" data-i18n="notFound.lead">Pod tym adresem nic nie ma.</p>
+
+    <div class="hero__actions hero__actions--left">
+      <a class="btn btn--primary" href="index.html" data-i18n="notFound.home">Na stronę główną</a>
+      <a class="btn btn--ghost" href="index.html#builder" data-i18n="notFound.builder">Do kreatora</a>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__bottom">
+      <p>© <span data-year>2026</span> ZARYA</p>
+      <p><a href="privacy.html" data-i18n="footer.privacy">Polityka prywatności</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/data/lang-pl.js"></script>
+<script src="assets/data/lang-ru.js"></script>
+<script src="assets/data/lang-en.js"></script>
+<script src="assets/js/glyphs.js"></script>
+<script src="assets/js/neon.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/core.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# ЗАРЯ — правила для поисковых роботов
+# Заменить адрес на реальный домен перед публикацией.
+
+User-agent: *
+Allow: /zarya-neon/
+Disallow: /zarya-neon/thanks.html
+
+Sitemap: https://oum1d.github.io/zarya-neon/sitemap.xml

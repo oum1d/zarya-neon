@@ -1,0 +1,243 @@
+/* ============================================================================
+   ЗАРЯ — стекло и свет
+   ----------------------------------------------------------------------------
+   Одна и та же трубка в двух состояниях. Ночью: цветной газ, три слоя
+   свечения, белое ядро внутри. Днём: серое стекло, блик сверху, тень —
+   и ни одного пикселя свечения.
+
+   Ночь и день различаются ТОЛЬКО значениями переменных из tokens.css,
+   поэтому переключение — это плавный transition, а не подмена разметки.
+
+   Про безопасность зрения: розжиг сделан двумя мягкими ступенями (меньше
+   трёх вспышек в секунду) и полностью выключается при prefers-reduced-motion.
+   ============================================================================ */
+
+.neon-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Одна «деталь» вывески: строка текста, рамка или отдельная буква.
+   Газ приходит атрибутом data-gas — так JS не пишет инлайн-стили и строгая
+   CSP (style-src 'self') работает без послаблений. */
+.nl-part { --gas: var(--gas-neon); }
+
+.nl-part[data-gas="neon"]   { --gas: var(--gas-neon); }
+.nl-part[data-gas="ruby"]   { --gas: var(--gas-ruby); }
+.nl-part[data-gas="pink"]   { --gas: var(--gas-pink); }
+.nl-part[data-gas="ice"]    { --gas: var(--gas-ice); }
+.nl-part[data-gas="mint"]   { --gas: var(--gas-mint); }
+.nl-part[data-gas="violet"] { --gas: var(--gas-violet); }
+.nl-part[data-gas="warm"]   { --gas: var(--gas-warm); }
+.nl-part[data-gas="white"]  { --gas: var(--gas-white); }
+
+.nl-tube {
+  fill: none;
+  stroke: var(--gas);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: var(--tube-opacity);
+  filter:
+    drop-shadow(0 0 var(--glow-1) color-mix(in srgb, var(--gas) calc(var(--glow-a1) * 100%), transparent))
+    drop-shadow(0 0 var(--glow-2) color-mix(in srgb, var(--gas) calc(var(--glow-a2) * 100%), transparent))
+    drop-shadow(0 0 var(--glow-3) color-mix(in srgb, var(--gas) calc(var(--glow-a3) * 100%), transparent));
+  /* Фильтр намеренно вне перехода: анимировать три размытия на каждой трубке
+     браузер не успевает, и переход начинал заикаться. Цвет стекла плывёт
+     плавно, а свечение включается и гаснет сразу — как настоящий разряд. */
+  transition:
+    stroke var(--d-switch) var(--e-switch),
+    opacity var(--d-switch) var(--e-switch);
+}
+
+/* Раскалённое ядро разряда: тонкая почти белая линия внутри трубки */
+.nl-core {
+  fill: none;
+  stroke: var(--tube-core);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: calc(0.9 - var(--room-light) * 0.45);
+  transition:
+    stroke var(--d-switch) var(--e-switch),
+    opacity var(--d-switch) var(--e-switch);
+}
+
+/* --- День: газ погашен ----------------------------------------------------
+   Трубка становится тем, чем и является — стеклянной железкой на стене.
+   Именно этот контраст продаёт неон лучше любого текста, и человек со
+   светлой системной темой видит его сразу, без всяких переключателей. */
+@media (prefers-color-scheme: light) {
+  .nl-tube {
+    stroke: var(--c-glass);
+    filter: drop-shadow(0 3px 4px rgba(30, 24, 18, 0.28));
+  }
+
+  .nl-core {
+    stroke: var(--c-glass-hi);
+    opacity: 0.5;
+  }
+
+  /* Маленькая трубка логотипа днём почти растворялась в светлом фоне:
+     для неё берём тёмное стекло, иначе шапка теряет опору. */
+  .brand__sign .nl-tube { stroke: var(--c-glass-shade); }
+  .brand__sign .nl-core { stroke: var(--c-glass); opacity: 0.6; }
+}
+
+/* --- Сцена: стол мастерской ----------------------------------------------- */
+.neon-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 16rem;
+  padding: var(--s-6);
+  border-radius: var(--radius-l);
+  border: 1px solid var(--c-line);
+  background: var(--c-bg-2);
+  overflow: hidden;
+  transition: background-color var(--d-switch) var(--e-switch),
+              border-color var(--d-switch) var(--e-switch);
+}
+
+/* Разметочная сетка стола. Два слоя постоянного цвета — светлый для ночи,
+   тёмный для дня — и переключаются они прозрачностью, а не цветом линий.
+   Причина техническая: градиент, собранный из переменной, при смене темы
+   перерисовывается мгновенно, и сетка щёлкала на фоне плавного фона.
+   Прозрачность анимируется честно, поэтому теперь сетка уходит вместе
+   со всем остальным. Маска гасит её к краям, чтобы это был фон, а не
+   украшение. */
+.neon-stage::before,
+.neon-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(currentColor 1px, transparent 1px) 0 0 / 100% 2.5rem,
+    linear-gradient(90deg, currentColor 1px, transparent 1px) 0 0 / 2.5rem 100%;
+  -webkit-mask-image: radial-gradient(120% 95% at 50% 42%, #000 25%, transparent 100%);
+          mask-image: radial-gradient(120% 95% at 50% 42%, #000 25%, transparent 100%);
+}
+
+.neon-stage::before {
+  color: #FFFFFF;
+  opacity: calc(0.1 * (1 - var(--room-light)));
+}
+
+.neon-stage::after {
+  color: #14120F;
+  opacity: calc(0.12 * var(--room-light));
+}
+
+/* --- Подложка ------------------------------------------------------------
+   Акрил живёт внутри SVG и режется по фактическим границам букв, поэтому
+   длинная надпись из него не вылезает и масштабируется вместе с ним.
+   Раньше это был прямоугольник в долях от сцены — он не знал ничего о
+   тексте и обрезал его. */
+.nl-plate {
+  stroke: none;
+  transition: fill var(--d-switch) var(--e-switch);
+}
+
+.nl-plate[data-plate="black"],
+.nl-plate[data-plate="cut"] { fill: #0B0B0E; }
+
+/* Прозрачный акрил — это стекло, а не серый лист: заливки почти нет,
+   зато видна кромка, на которой ловится свет. С плотной заливкой карточка
+   образца выбивалась из ряда светлым прямоугольником. */
+.nl-plate[data-plate="clear"] {
+  fill: color-mix(in srgb, var(--c-ink) 3.5%, transparent);
+  stroke: color-mix(in srgb, var(--c-ink) 30%, transparent);
+  stroke-width: 2;
+}
+
+/* Днём чёрный акрил остаётся чёрным — это его настоящий цвет,
+   а прозрачный слегка ловит свет комнаты. */
+@media (prefers-color-scheme: light) {
+  .nl-plate[data-plate="clear"] {
+    fill: color-mix(in srgb, #FFFFFF 40%, transparent);
+    stroke: color-mix(in srgb, var(--c-ink) 30%, transparent);
+  }
+}
+
+.neon-stage .neon-svg { position: relative; z-index: 1; }
+
+.neon-stage.is-empty .neon-svg { opacity: 0.25; }
+
+/* --- Розжиг первого экрана ------------------------------------------------
+   Буквы включаются по очереди, как прогревается настоящая трубка.
+   Две мягкие ступени вместо строба: быстрее трёх вспышек в секунду не мигаем. */
+.hero-letter { opacity: 0; }
+
+/* Надписи без розжига (логотип, «Приняли», «404») просто горят */
+.is-static .hero-letter { opacity: 1; animation: none; }
+
+/* Задержка входит в сокращённую запись: иначе правило для «дышащих» букв
+   ниже затрёт animation-delay и половина надписи вспыхнет разом. */
+.is-lit .hero-letter {
+  animation: zarya-ignite 1.15s var(--e-out) var(--ignite-delay, 0s) forwards;
+}
+
+/* Каждая следующая буква зажигается на 0.12 с позже предыдущей */
+.hero-letter[data-ignite="0"]  { --ignite-delay: 0.25s; }
+.hero-letter[data-ignite="1"]  { --ignite-delay: 0.37s; }
+.hero-letter[data-ignite="2"]  { --ignite-delay: 0.49s; }
+.hero-letter[data-ignite="3"]  { --ignite-delay: 0.61s; }
+.hero-letter[data-ignite="4"]  { --ignite-delay: 0.73s; }
+.hero-letter[data-ignite="5"]  { --ignite-delay: 0.85s; }
+.hero-letter[data-ignite="6"]  { --ignite-delay: 0.97s; }
+.hero-letter[data-ignite="7"]  { --ignite-delay: 1.09s; }
+.hero-letter[data-ignite="8"]  { --ignite-delay: 1.21s; }
+.hero-letter[data-ignite="9"]  { --ignite-delay: 1.33s; }
+.hero-letter[data-ignite="10"] { --ignite-delay: 1.45s; }
+.hero-letter[data-ignite="11"] { --ignite-delay: 1.57s; }
+.hero-letter[data-ignite="12"] { --ignite-delay: 1.69s; }
+.hero-letter[data-ignite="13"] { --ignite-delay: 1.81s; }
+
+@keyframes zarya-ignite {
+  0%   { opacity: 0; }
+  28%  { opacity: 0.5; }
+  44%  { opacity: 0.18; }
+  100% { opacity: 1; }
+}
+
+/* Живое «дыхание» газа: почти незаметное, длинное. Настоящая трубка тоже
+   не светит идеально ровно. */
+.is-lit .hero-letter:nth-child(2n) {
+  animation:
+    zarya-ignite 1.15s var(--e-out) var(--ignite-delay, 0s) forwards,
+    zarya-breathe 7s calc(var(--ignite-delay, 0s) + 2.4s) ease-in-out infinite;
+}
+
+@keyframes zarya-breathe {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.06); }
+}
+
+/* Неисправная трубка на странице 404: контакт отходит раз в несколько секунд.
+   Две мигания подряд, дальше долгая пауза — безопасно для светочувствительных
+   людей и похоже на настоящую поломку. */
+.is-broken .nl-part { animation: zarya-broken 6s var(--e-in-out) infinite; }
+
+@keyframes zarya-broken {
+  0%, 44%  { opacity: 1; }
+  47%      { opacity: 0.28; }
+  51%      { opacity: 1; }
+  60%      { opacity: 0.35; }
+  64%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-broken .nl-part { animation: none !important; opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-letter,
+  .is-lit .hero-letter,
+  .is-lit .hero-letter:nth-child(2n) {
+    animation: none !important;
+    opacity: 1;
+  }
+}
+
+/* Пока JS не поднялся, надпись не должна быть невидимой */
+html:not(.is-ready) .hero-letter { opacity: 1; }
