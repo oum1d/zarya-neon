@@ -538,7 +538,9 @@
   font-size: var(--t-micro);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--c-ink-mute);
+  /* Не --c-ink-mute: он рассчитан на подписи от 14px и на 12px даёт 4.33:1
+     при норме 4.5:1. Здесь текст мелкий, поэтому берём --c-ink-dim. */
+  color: var(--c-ink-dim);
   margin-bottom: 0.2rem;
 }
 
